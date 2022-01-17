@@ -72,7 +72,7 @@ RUN mkdir -p /var/www/tmp && \
 VOLUME /var/www/html/AVideo/plugin
 RUN mkdir -p /var/www/AVideo/plugin && \
     chown www-data:www-data /var/www/html/AVideo/plugin && \
-    chmod 755 /var/www/html/AVideo/plugin && \
+    chmod 755 /var/www/html/AVideo/plugin
 
 VOLUME /var/www/html/AVideo/videos
 RUN mkdir -p /var/www/html/AVideo/videos && \
