@@ -2,6 +2,12 @@ FROM ubuntu/apache2:2.4-20.04_edge
 
 ARG DEBIAN_FRONTEND=noninteractive
 
+ENV DB_MYSQL_HOST db
+ENV DB_MYSQL_PORT 3306
+ENV DB_MYSQL_USER avideo
+ENV DB_MYSQL_PASSWORD avideo
+ENV DB_MYSQL_NAME avideo
+
 # Update OS
 RUN apt update && \
     apt upgrade -y
@@ -76,4 +82,3 @@ RUN mkdir -p /var/www/html/AVideo/videos && \
 WORKDIR /var/www/html/AVideo/
 
 CMD apachectl -D FOREGROUND
-RUN service apache2 restart
