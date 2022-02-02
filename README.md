@@ -11,4 +11,8 @@ to create an image of the AVideo Platform project.
 
 You can also download the latest image from Docker Hub.
 
-    docker pu trickert76/avideo-platform:latest
+    docker pull trickert76/avideo-platform:latest
+
+## todo
+
+currently we are working on a version specific image (current 11.1.1 and 3.7)

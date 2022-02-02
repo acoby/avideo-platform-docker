@@ -8,9 +8,11 @@ ENV DB_MYSQL_USER avideo
 ENV DB_MYSQL_PASSWORD avideo
 ENV DB_MYSQL_NAME avideo
 
-# Update OS
-RUN apt update && \
-    apt upgrade -y
+ENV VERSION_AVIDEO 11.1.1
+ENV VERSION_ENCODER 3.7
+
+# Retrieve package list
+RUN apt update
 
 # Install dependencies
 RUN apt install -y --no-install-recommends \
@@ -23,8 +25,6 @@ RUN apt install -y --no-install-recommends \
       curl \
       wget && \
     apt install -y \
-      sshpass \
-      net-tools \
       ffmpeg \
       libimage-exiftool-perl \
       libapache2-mod-xsendfile \
@@ -51,15 +51,11 @@ RUN apt install -y --no-install-recommends \
 
 # Configure AVideo
 RUN cd /var/www/html && \
-    git clone https://github.com/WWBN/AVideo.git && \
-    git clone https://github.com/WWBN/AVideo-Encoder.git && \
-    curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl && \
-    chmod a+rx /usr/local/bin/youtube-dl && \
+    git clone -b $VERSION_AVIDEO  -depth 1 https://github.com/WWBN/AVideo.git && \
+    git clone -b $VERSION_ENCODER -depth 1 https://github.com/WWBN/AVideo-Encoder.git && \
     pip3 install youtube-dl && \
-    pip3 install --upgrade youtube-dl && \
     cd /var/www/html/AVideo/plugin/User_Location/install && \
     unzip install.zip && \
-    chmod 777 /var/www/html/AVideo/vendor/ezyang/htmlpurifier/library/HTMLPurifier/DefinitionCache/Serializer/ && \
     rm /etc/apache2/sites-enabled/000-default.conf && \
     cp /var/www/html/AVideo/deploy/apache/avideo.conf /etc/apache2/sites-enabled/avideo.conf && \
     a2enmod rewrite expires headers ssl xsendfile
