@@ -51,8 +51,9 @@ RUN apt install -y --no-install-recommends \
 
 # Configure AVideo
 RUN cd /var/www/html && \
-    git clone -b $VERSION_AVIDEO  -depth 1 https://github.com/WWBN/AVideo.git && \
-    git clone -b $VERSION_ENCODER -depth 1 https://github.com/WWBN/AVideo-Encoder.git && \
+    git config --global advice.detachedHead false && \
+    git clone -b $VERSION_AVIDEO  --depth 1 https://github.com/WWBN/AVideo.git && \
+    git clone -b $VERSION_ENCODER --depth 1 https://github.com/WWBN/AVideo-Encoder.git && \
     pip3 install youtube-dl && \
     cd /var/www/html/AVideo/plugin/User_Location/install && \
     unzip install.zip && \
