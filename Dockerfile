@@ -49,6 +49,9 @@ RUN apt install -y --no-install-recommends \
       php7.4-zip \
       php7.4-intl
 
+COPY apache/000-default.conf /etc/apache2/sites-enabled/000-default.conf
+COPY apache/certificate.sh /etc/apache2/certificate.sh
+
 # Configure AVideo
 RUN cd /var/www/html && \
     git config --global advice.detachedHead false && \
@@ -57,8 +60,8 @@ RUN cd /var/www/html && \
     pip3 install youtube-dl && \
     cd /var/www/html/AVideo/plugin/User_Location/install && \
     unzip install.zip && \
-    rm /etc/apache2/sites-enabled/000-default.conf && \
-    cp /var/www/html/AVideo/deploy/apache/avideo.conf /etc/apache2/sites-enabled/avideo.conf && \
+    chmod 700 /etc/apache2/certificate.sh && \
+    /etc/apache2/certificate.sh && \
     a2enmod rewrite expires headers ssl xsendfile
 
 VOLUME /var/www/tmp
