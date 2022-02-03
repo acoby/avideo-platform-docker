@@ -39,13 +39,10 @@ openssl req -x509 \
   -nodes \
   -sha256 \
   -days 3650 \
-  -subj '/C=DE/L=Hamburg/O=acoby/OU=DEV/CN=localhost' \
+  -subj '/C=DE/L=Hamburg/O=avideo/OU=DEV/CN=localhost' \
   -extensions EXT -config <( \
     printf "${CONFIG}")
 openssl x509 -in localhost.crt -noout -text
-
-
-exit 0
 
 echo "Create CA"
 openssl req -x509 \
@@ -53,7 +50,7 @@ openssl req -x509 \
   -newkey rsa:4096 \
   -nodes \
   -sha256 \
-  -subj '/C=DE/L=Hamburg/O=acoby/OU=CA/CN=localhost' \
+  -subj '/C=DE/L=Hamburg/O=avideo/OU=CA/CN=localhost' \
   -keyout ca.key -out ca.crt
 
 echo "Create CSR"
@@ -63,7 +60,7 @@ openssl req \
   -nodes \
   -sha256 \
   -days 3650 \
-  -subj '/C=DE/L=Hamburg/O=acoby/OU=DEV/CN=localhost' \
+  -subj '/C=DE/L=Hamburg/O=avideo/OU=DEV/CN=localhost' \
   -extensions EXT -config <( \
     printf "[dn]\nCN=localhost\n[req]\ndistinguished_name=dn\n[EXT]\nsubjectAltName=${subjectAltName}\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
 
@@ -87,6 +84,8 @@ openssl x509 -in localhost.crt -noout -text
 echo "Create PEM"
 cat ca.crt > localhost.pem
 cat localhost.crt >> localhost.pem
+
+ls -al /etc/apache2/ssl
 
 chmod 644 localhost.pem
 chmod 640 localhost.key
