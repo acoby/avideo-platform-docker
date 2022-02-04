@@ -11,6 +11,11 @@ ENV DB_MYSQL_NAME avideo
 ENV VERSION_AVIDEO 11.1.1
 ENV VERSION_ENCODER 3.7
 
+ENV SERVER_NAME avideo.localhost
+ENV CREATE_TLS_CERTIFICATE yes
+ENV TLS_CERTIFICATE_FILE /etc/apache2/ssl/localhost.crt
+ENV TLS_CERTIFICATE_KEY /etc/apache2/ssl/localhost.key
+
 # Retrieve package list
 RUN apt update
 
@@ -50,18 +55,17 @@ RUN apt install -y --no-install-recommends \
       php7.4-intl
 
 COPY apache/000-default.conf /etc/apache2/sites-enabled/000-default.conf
-COPY apache/certificate.sh /etc/apache2/certificate.sh
+COPY apache/docker-entrypoint /usr/local/bin/docker-entrypoint
 
 # Configure AVideo
-RUN cd /var/www/html && \
+RUN chmod 755 /usr/local/bin/docker-entrypoint && \
+    cd /var/www/html && \
     git config --global advice.detachedHead false && \
     git clone -b $VERSION_AVIDEO  --depth 1 https://github.com/WWBN/AVideo.git && \
     git clone -b $VERSION_ENCODER --depth 1 https://github.com/WWBN/AVideo-Encoder.git && \
     pip3 install youtube-dl && \
     cd /var/www/html/AVideo/plugin/User_Location/install && \
     unzip install.zip && \
-    chmod 700 /etc/apache2/certificate.sh && \
-    /etc/apache2/certificate.sh && \
     a2enmod rewrite expires headers ssl xsendfile
 
 VOLUME /var/www/tmp
@@ -81,4 +85,8 @@ RUN mkdir -p /var/www/html/AVideo/videos && \
 
 WORKDIR /var/www/html/AVideo/
 
-CMD apachectl -D FOREGROUND
+EXPOSE 443
+
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint"]
+CMD ["apache2-foreground"]
+HEALTHCHECK --interval=60s --timeout=55s --start-period=1s CMD curl --fail https://localhost/ || exit 1  
