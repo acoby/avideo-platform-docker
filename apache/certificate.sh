@@ -87,6 +87,7 @@ cat localhost.crt >> localhost.pem
 
 ls -al /etc/apache2/ssl
 
-chmod 644 localhost.*
+chmod 644 localhost.pem
+chmod 640 localhost.key
 
 #eof
